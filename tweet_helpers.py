@@ -9,7 +9,7 @@ def clean_text(text):
     clean = re.sub("[^A-Za-z]", " ", hex_ascii_removed).lower()
     return clean
 
-def get_word_vector(par, word_embed, ifd_weights):
+def get_word_vector_from_corpus(par, word_embed, ifd_weights):
     par_list = par.split()
     par_list = [elem for elem in par_list if len(elem)>0]
 
@@ -24,3 +24,18 @@ def get_word_vector(par, word_embed, ifd_weights):
         except:
             pass
     return sum_vector/sum_weights
+
+def get_word_vector(par, word_embed, stop_words):
+    par_list = par.split()
+    par_list = [elem for elem in par_list if len(elem)>0]
+    par_list = [elem for elem in par_list if elem not in stop_words]
+    count = 0.0
+    sum_vector = np.zeros(300)
+
+    for word in par_list:
+        try:
+            sum_vector += word_embed[word]
+            count += 1.0
+        except:
+            pass
+    return sum_vector/count

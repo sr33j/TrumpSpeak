@@ -9,7 +9,7 @@ import tweepy #https://github.com/tweepy/tweepy
 import csv
 import numpy as np
 from tweet_helpers import clean_text, get_word_vector
-from sklearn.feature_extraction.text import TfidfVectorizer
+from nltk.corpus import stopwords 
 from gensim.models import KeyedVectors
 import pickle
 
@@ -82,20 +82,13 @@ def get_all_tweets(handle, last_tweet_time):
 	for tweet in outtweets:
 		text = str(tweet[2])
 		clean_tweets.append(clean_text(text))
-	
-	vectorizer = TfidfVectorizer()
-	try:
-		vectorizer = pickle.load(open("vectorizer.pkl", "rb"))
-	except:
-		vectorizer.fit(clean_tweets)
-		pickle.dump(vectorizer, open("vectorizer.pkl", "wb"))
 
-	word_vectors = []
+	stop_words = set(stopwords.words('english'))
 
 	google_model = KeyedVectors.load_word2vec_format("GoogleNews-vectors-negative300.bin", binary=True)
 
 	for elem in clean_tweets:
-		word_vectors.append(get_word_vector(elem,google_model,vectorizer))
+		word_vectors.append(get_word_vector(elem,google_model,stop_words))
 	
 	try:
 		arr = np.load("wordvectors.npy")

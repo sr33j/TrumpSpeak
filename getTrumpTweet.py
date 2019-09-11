@@ -6,7 +6,7 @@ import pickle
 from scipy.spatial.distance import cosine
 
 
-def find_closest_tweet(phrase, vectorizer, google_model):
+def find_closest_tweet(phrase, stop_words, google_model):
     trump_tweets = []
     with open('trump_tweets.csv') as csvfile:
         trump_csv = csv.reader(csvfile, delimiter=',')
@@ -14,7 +14,7 @@ def find_closest_tweet(phrase, vectorizer, google_model):
             trump_tweets.append(row[2])
 
     clean_phrase = clean_text(phrase)
-    phrase_vector = get_word_vector(clean_phrase,google_model,vectorizer)
+    phrase_vector = get_word_vector(clean_phrase,google_model,stop_words)
 
     word_vectors = np.load("wordvectors.npy", allow_pickle=True)
 
